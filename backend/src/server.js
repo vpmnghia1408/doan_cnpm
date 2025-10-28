@@ -6,26 +6,49 @@ import userRoute from "./routes/userRoute.js";
 import cookieParser from "cookie-parser";
 import { protectedRoute } from "./middlewares/authMiddleware.js";
 import cors from "cors";
+import messageRouter from "./routes/messageRoute.js";
+import { chatSocket } from "./sockets/chatSocket.js";
+import { createServer } from "http";
+import { Server } from "socket.io";
 
 dotenv.config();
 
 const app = express();
+
+const server = createServer(app); // 👈 dùng http server thay vì app.listen
+const io = new Server(server, {
+  cors: {
+    origin: ["http://localhost:5173", "http://localhost:5174"],
+    credentials: true,
+  },
+});
+
 const PORT = process.env.PORT || 5001;
 
 // middlewares
 app.use(express.json());
 app.use(cookieParser());
-app.use(cors({ origin: process.env.CLIENT_URL, credentials: true }));
+app.use(
+  cors({
+    origin: ["http://localhost:5173", "http://localhost:5174"],
+    credentials: true,
+  })
+);
 
 // public routes
 app.use("/api/auth", authRoute);
+
+app.use("/api/messages", messageRouter);
 
 // private routes
 app.use(protectedRoute);
 app.use("/api/users", userRoute);
 
 connectDB().then(() => {
-  app.listen(PORT, () => {
-    console.log(`server bắt đầu trên cổng ${PORT}`);
+  server.listen(PORT, () => {
+    console.log(`✅ Server (Express + Socket.IO) đang chạy trên cổng ${PORT}`);
   });
 });
+
+// kích hoạt socket chat
+chatSocket(io); // 👈 gọi hàm socket

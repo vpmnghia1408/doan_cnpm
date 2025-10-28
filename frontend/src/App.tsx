@@ -4,7 +4,6 @@ import ChatAppPage from "./pages/ChatAppPage";
 import { Toaster } from "sonner";
 import SignUpPage from "./pages/SignUpPage";
 import ProtectedRoute from "./components/auth/ProtectedRoute";
-import AppChat from "./pages/Chat";
 
 function App() {
   return (
@@ -20,7 +19,6 @@ function App() {
           <Route element={<ProtectedRoute />}>
             <Route path="/" element={<ChatAppPage />} />
           </Route>
-          <Route path="/chat" element={<AppChat />} />
         </Routes>
       </BrowserRouter>
     </>

@@ -1,17 +1,8 @@
 "use client";
 
-import {
-  Plus,
-  Settings,
-  MessageCircle,
-  Moon,
-  Sun,
-  LogOut,
-  Bell,
-  User,
-} from "lucide-react";
+import { Settings, Moon, Sun, Bell, User } from "lucide-react";
 import { useState } from "react";
-
+import Logout from "@/components/auth/Logout";
 interface SidebarProps {
   selectedChat: string | null;
   onSelectChat: (chatId: string) => void;
@@ -66,9 +57,10 @@ export default function Sidebar({
   onSelectChat,
   isDark,
   onToggleDark,
-}: SidebarProps) {
+  user,
+}: SidebarProps & { user: any }) {
   const [showSettings, setShowSettings] = useState(false);
-
+  console.log("Sidebar received user prop:", user);
   return (
     <div
       className={`w-80 flex flex-col border-r ${
@@ -185,7 +177,7 @@ export default function Sidebar({
         <div className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-100 dark:hover:bg-gray-800 cursor-pointer">
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-full bg-gradient-to-br from-blue-500 to-blue-600 flex items-center justify-center text-white font-bold">
-              M
+              {user?.username?.charAt(0).toUpperCase() || "U"}
             </div>
             <div>
               <p
@@ -193,9 +185,11 @@ export default function Sidebar({
                   isDark ? "text-white" : "text-gray-900"
                 }`}
               >
-                M tikcode
+                {user?.username || "Unknown"}
               </p>
-              <p className="text-xs text-gray-500">@mtikcode</p>
+              <p className="text-xs text-gray-500">
+                @{user?.username || "user"}
+              </p>
             </div>
           </div>
           <button
@@ -224,9 +218,9 @@ export default function Sidebar({
             <button className="w-full flex items-center gap-3 px-4 py-3 text-sm hover:bg-gray-700 dark:text-gray-200 border-b border-gray-700">
               <Bell size={16} /> Notifications
             </button>
-            <button className="w-full flex items-center gap-3 px-4 py-3 text-sm text-red-500 hover:bg-gray-700">
-              <LogOut size={16} /> Logout
-            </button>
+            <div className="px-4 py-3">
+              <Logout />
+            </div>
           </div>
         )}
       </div>
